@@ -9,6 +9,7 @@
 /**
  * Unit tests for the sha256 algorithm  (message padding, preprocessing, working variables, hash functions, hash computation)
  * Some tests use examples from https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/SHA256.pdf
+ * and test vectors from: https://di-mgt.com.au/sha_testvectors.html
  */
 
 
@@ -81,9 +82,6 @@
   volatile int passed_tests = 0; 
   volatile int failed_tests = 0;
 
-/**
- * Test vectors from: https://di-mgt.com.au/sha_testvectors.html
- */
 
 void test_sha512_message_with_0_bits(){
      long long int message[] = {};
@@ -157,166 +155,6 @@ void test_sha512_message_with_8_Million_bits(){
 }
 	
 
-void test_Sigma1_1(){
-      long long int input = 1;
-      long long int expected = 0x420008000000000;
-      long long int actual = test_Sigma1(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-void test_Sigma1_2(){
-      long long int input = 0xcafebabe;
-      long long int expected = 0xd3affa58;
-      long long int actual = test_Sigma1(input);
-     TEST_INT_EQUALS(expected, actual)
-}	
-
-void test_Sigma0_1(){
-      long long int input = 1;
-      long long int expected = 0x4008040000000000;
-      long long int actual = test_Sigma0(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-void test_Sigma0_2(){
-      long long int input = 0xcafebabe;
-      long long int expected = 0x9da30271;
-      long long int actual = test_Sigma0(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-void test_sig0_1(){
-      long long int input = 8;
-      long long int expected = 0x10020001;
-      long long int actual = test_sig0(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-void test_sig0_2(){
-      long long int input = 2;
-      long long int expected = 0x4008000;
-      long long int actual = test_sig0(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-
-void test_sig1_1(){
-      long long int input = 2048;
-      long long int expected = 0x5000002;
-      long long int actual = test_sig1(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-void test_sig1_2(){
-      long long int input = 15;
-      long long int expected = 0x66000;
-      long long int actual = test_sig1(input);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-
-
-void test_Ch_1(){
-      long long int x = 1;
-      long long int y = 3;
-      long long int z = 4;
-      long long int expected = 5;
-      long long int actual = test_Ch(x, y, z);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-//~ void test_Ch_2(){
-      //~ long long int x = 0xcafeb1b1;
-      //~ long long int y = 0xd0d0d1d0;
-      //~ long long int z = 0xdeaf1234;
-      //~ long long int expected = 0xd4d19394;
-      //~ long long int actual = test_Ch(x, y, z);
-     //~ TEST_INT_EQUALS(expected, actual)
-//~ }
-
-//~ void test_Ch_3(){
-      //~ long long int x = 0xcafebabe;
-      //~ long long int y = 0xd0d0d1d0;
-      //~ long long int z = 0xdeaf1234;
-      //~ long long int expected = 0xd4d19090;
-      //~ long long int actual = test_Ch(x, y, z);
-     //~ TEST_INT_EQUALS(expected, actual)
-//~ }
-
-//~ void test_Maj_1(){
-      //~ long long int x = 0xcafebabe;
-      //~ long long int y = 0xd0d0dead;
-      //~ long long int z = 0xf1faabba; 
-      //~ long long int expected = 0xd0fababe;
-      //~ long long int actual = test_Maj(x, y, z);
-     //~ TEST_INT_EQUALS(expected, actual)
-//~ }
-
-void test_Maj_2(){
-      int x = 1;
-      int y = 2;
-      int z = 3; 
-      int expected = 3;
-      int actual = test_Maj(x, y, z);
-     TEST_INT_EQUALS(expected, actual)
-}
-
-//~ /**
- //~ *  T1 = h          + Sigma1(e)          + Ch(e,f,g)                            + K          + W
- //~ *  T1 = 0x12345678 + Sigma1(0xcafebabe) + Ch(0xcafebabe,0xd0d0d1d0,0xdeaf1234) + 0x428a2f98 + 0xf00badad 
- //~ *  T1 = 0x12345678 +    0xd3affa58      +           0xd4d19090                 + 0x428a2f98 + 0xf00badad  
- //~ *  T1 = 0xed4bbea5     
- //~ */
-//~ void test_set_t1_1(){
-      //~ long long int h = 0x12345678;
-      //~ long long int e = 0xcafebabe;
-      //~ long long int f = 0xd0d0d1d0;
-      //~ long long int g = 0xdeaf1234;
-      //~ long long int k = 0x428a2f98;
-      //~ long long int w = 0xf00badad;
-      //~ long long int expected = 0xed4bbea5;
-      //~ long long int actual = test_setT1(h,e,f,g,k,w);
-     //~ TEST_INT_EQUALS(expected, actual)
-//~ }
-
-//~ /**
- //~ *  T1 = h          + Sigma1(e)          + Ch(e,f,g)                            + K          + W
- //~ *  with overflow:
- //~ *  T1 = 0xffffffff + Sigma1(0xcafebabe) + Ch(0xcafebabe,0xd0d0d1d0,0xdeaf1234) + 0xffffffff + 0xffffffff 
- //~ *  T1 = 0xffffffff +    0xd3affa58      +           0xd4d19090                 + 0xffffffff + 0xffffffff  
- //~ *  T1 = 0xa8818ae5   (= 0x4a8818ae5 modulo 2^32)
- //~ */
-//~ void test_set_t1_2(){
-      //~ long long int h = 0xffffffff;
-      //~ long long int e = 0xcafebabe;
-      //~ long long int f = 0xd0d0d1d0;
-      //~ long long int g = 0xdeaf1234;
-      //~ long long int k = 0xffffffff;
-      //~ long long int w = 0xffffffff;
-      //~ long long int expected = 0xa8818ae5;
-      //~ long long int actual = test_setT1(h,e,f,g,k,w);
-     //~ TEST_INT_EQUALS(expected, actual)
-//~ }
-
-//~ void test_set_t2_1(){
-      //~ long long int a = 0xcafebabe;
-      //~ long long int b = 0xd0d0dead;
-      //~ long long int c = 0xf1faabba;
-      //~ long long int expected = 0x6e9dbd2f;
-      //~ long long int actual = test_setT2(a,b,c);
-     //~ TEST_INT_EQUALS(expected, actual)
-//~ }
-
-void test_prepare_first_16_schedules(){
-      long long int block[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-      long long int expected[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-      long long int actual[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};  
-     prepare_first_16_schedules(block, actual) ;
-     for(int i = 0; i < 16; i++){
-	//  printf("%d: %x %x\n", i, expected[i], actual[i]);
-          TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-     }     
-}
 
 void test_calculate_values_from_messagelength_1(){
        long long int actual[]={0,0,0,0,0};
@@ -408,142 +246,7 @@ void test_calculate_values_from_messagelength_8(){
 }
 
 
-void test_clear_schedules(){
-       long long int actual[80];
-       for(int i = 1; i<81; i++){
-            actual[i] = i;
-       }
-       long long int expected[80]; 
-              for(int i = 0; i<80; i++){
-            expected[i] = 0;
-       }
- 
-     clear_schedules(actual); 
-     for(int i = 0; i<80; i++){
-         // printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-          TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-     }      
-}
 
-void test_prepare_17th_schedule(){
-       long long int values[16] = {1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16}; 
-       long long int actual[17] = {0xfe,0xfa,0xba,0xbe,0xd0,0xde,0xe1,0xd1,0xca,0xfe,0xa1,0xd1,0xf0,0xd0,0x1d,0xab,0xba};
-       long long int expected[17] = {1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16, 0x406e00b};
-      long long int value17 = prepare_17th_schedule(values, actual);
-     //printf("exp %x actual %x\n", 0x406e00b, value17);
-     TEST_INT_EQUALS(0x406e00b, value17)
-     for(int i = 0; i<17; i++){
-       // printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-          TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-     }      
-}
-
-
-
-
-//~ void test_set_working_variables_1(){
-      //~ long long int firstWorkingSchedule = 0x61626380; //"abc"    
-     //~ //variables after first round
-       //~ long long int expected[] = {0x5d6aebcd, 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xfa2a4622, 0x510e527f, 0x9b05688c, 0x1f83d9ab};
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ set_working_variables_once(firstWorkingSchedule, actual); 
-          //~ for(int i = 0; i<8; i++){
-	 //~ // printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	  //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-//~ }
-
-//~ void test_set_working_variables_2(){
-      //~ long long int firstWorkingSchedule = 0x61626364; //"abcd"    
-     //~ //variables after first round
-       //~ long long int expected[] = {0x5d6aebb1, 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xfa2a4606, 0x510e527f, 0x9b05688c, 0x1f83d9ab};
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ set_working_variables_once(firstWorkingSchedule, actual); 
-          //~ for(int i = 0; i<8; i++){
-	//~ //  printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	  //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-//~ }
-
-//~ void test_set_working_variables_16times_1(){
-     //~ //variables after 16 rounds (t=15)
-       //~ long long int expected[] = {0xb0fa238e, 0xc0645fde, 0xd932eb16, 0x87912990, 0x07590dcd, 0x0B92f20c, 0x745a48de, 0x1e578218};
-       //~ long long int schedule[] = {0x61626380,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0x00000018}; //padded block for message "abc"
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ set_working_variables_16_times(schedule, actual); 
-          //~ for(int i = 0; i<8; i++){
-	 //~ // printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	  //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-//~ }
-
-
-
-//~ void test_set_working_variables_16times_2(){
-     //~ //variables after 16 rounds (t=15)
-       //~ long long int expected[] = {0xc3486194, 0xdd16cbb3, 0xd68e6457, 0x101a4861, 0x1496a54f, 0x9162aded, 0x9243f8af, 0x839a0fc9};
-       //~ long long int schedule[] = {0x61626364,0x62636465,0x63646566,0x64656667,0x65666768,0x66676869,0x6768696a,0x68696a6b,0x696a6b6c,0x6a6b6c6d,0x6b6c6d6e,0x6c6d6e6f,0x6d6e6f70,0x6e6f7071,0x80000000,0}; 
-                                //~ //first padded block of message "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ set_working_variables_16_times(schedule, actual); 
-          //~ for(int i = 0; i<8; i++){
-	 //~ // printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	  //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-//~ }
-
-//~ void test_set_working_variables_64times(){
-     //~ //variables after 64 rounds (t=63)
-       //~ long long int expected[] = {0x1BDC6F6F, 0x86126910, 0xF6F443F8, 0xBCFCE922, 0x25D2430A, 0x2FC08F85, 0xACC75916, 0x962D8621};
-     //~ //first block of message "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-       //~ long long int schedule[] = {0x61626364,0x62636465,0x63646566,0x64656667,0x65666768,0x66676869,0x6768696a,0x68696a6b,0x696a6b6c,0x6a6b6c6d,0x6b6c6d6e,0x6c6d6e6f,0x6d6e6f70,0x6e6f7071,0x80000000,0}; 
-                                
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ set_working_variables_64_times(schedule, actual); 
-          //~ for(int i = 0; i<8; i++){
-	//~ //  printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	  //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-//~ }
-
-//~ void test_compute_intermediate_hash_value(){
-       //~ long long int expected[] = {0x85E655D6, 0x417A1795, 0x3363376A, 0x624CDE5C, 0x76E09589, 0xCAC5F811, 0xCC4B32C1, 0xF20E533A};
-     //~ //first block of message "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-       //~ long long int schedule[] = {0x61626364,0x62636465,0x63646566,0x64656667,0x65666768,0x66676869,0x6768696a,0x68696a6b,0x696a6b6c,0x6a6b6c6d,0x6b6c6d6e,0x6c6d6e6f,0x6d6e6f70,0x6e6f7071,0x80000000,0}; 
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ compute_intermediate_hash_value(schedule, actual);
-          //~ for(int i = 0; i<8; i++){
-         //~ //   printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	      //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-
-//~ }
-
-//~ void test_compute_intermediate_hash_value_2(){
-       //~ long long int expected[] = {0xba7816bf, 0x8f01cfea, 0x414140de, 0x5dae2223, 0xb00361a3, 0x96177a9c, 0xb410ff61, 0xf20015ad};
-     //~ //message "abc", padded first block:
-       //~ long long int schedule[] = {0x61626380,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0x00000018}; 
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ compute_intermediate_hash_value(schedule, actual);
-          //~ for(int i = 0; i<8; i++){
-         //~ //   printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	      //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-
-//~ }
-
-//~ void test_compute_intermediate_hash_value_3(){ //e3b0c442 98fc1c14 9afbf4c8 996fb924 27ae41e4 649b934c a495991b 7852b855
-       //~ long long int expected[] = {0xe3b0c442, 0x98fc1c14, 0x9afbf4c8, 0x996fb924, 0x27ae41e4, 0x649b934c, 0xa495991b, 0x7852b855};
-     //~ //empty message "", padded first and only block:
-       //~ long long int schedule[] = {0x80000000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-       //~ long long int actual[] = {0,0,0,0,0,0,0,0}; 
-     //~ compute_intermediate_hash_value(schedule, actual);
-          //~ for(int i = 0; i<8; i++){
-         //~ //   printf("%d:exp %x actual %x\n", i, expected[i], actual[i]);
-	      //~ TEST_INT_EQUALS_LOOP(i,expected[i], actual[i])    
-          //~ }
-
-//~ }
 
 void test_set_residual_bits_3(){
 
@@ -684,23 +387,6 @@ int main(void){
  test_sha512_message_with_1176_bits();
  test_sha512_message_with_448_bits();
  test_sha512_message_with_8_Million_bits();
- //~ test_Sigma1_1();
- //~ test_Sigma1_2();
- //~ test_Sigma0_1();
- //~ test_Sigma0_2();
- //~ test_sig0_1();
- //~ test_sig0_2();
- //~ test_sig1_1();
- //~ test_sig1_2();
- //~ test_Ch_1();
- //~ test_Ch_2();
- //~ test_Ch_3();
- //test_Maj_1();
- test_Maj_2();
- //~ test_set_t1_1();
- //~ test_set_t1_2();
- //~ test_set_t2_1();
- //~ test_prepare_first_16_schedules();
  test_calculate_values_from_messagelength_1();
  test_calculate_values_from_messagelength_2();
  test_calculate_values_from_messagelength_3();
@@ -709,21 +395,9 @@ int main(void){
  test_calculate_values_from_messagelength_6();
  test_calculate_values_from_messagelength_7();
  test_calculate_values_from_messagelength_8();
- //~ test_clear_schedules();
- //~ test_prepare_17th_schedule();
- //~ test_set_working_variables_1();
- //~ test_set_working_variables_2();
- //~ test_set_working_variables_16times_1();
- //~ test_set_working_variables_16times_2();
- //~ test_set_working_variables_64times();
- //~ test_compute_intermediate_hash_value();
- //~ test_compute_intermediate_hash_value_2();
- //~ test_compute_intermediate_hash_value_3();  
-
-
  test_set_residual_bits_3();
  test_set_residual_bits_4();
-test_set_residual_bits_5();
+ test_set_residual_bits_5();
  test_set_residual_bits_6();
  test_set_residual_bits_7();
  test_set_residual_bits_8();
