@@ -1,0 +1,72 @@
+/**
+ * Flags used for the padding process.
+ * Availability of free space for padding block with '1' and messagelength
+ */
+.equ NO_RESIDUAL_BITS, 0
+.equ FREESPACE_FOR_1_AND_LENGTH, 1   //free bits > 64
+.equ SECOND_BLOCK_FOR_LENGTH, 2     // 1 <= free bits <= 64 
+
+
+/**
+ * SHA-256 – Aliases and use of registers
+ */
+// Inputs from calling function 
+mbuf_  .req x0 //address of message buffer 
+mlen_  .req x1 //message length in bits. 
+hbuf_  .req x2 //address of buffer for final hash, immediately pushed to stack. 
+
+//registers used in all stages of the algorithm
+idx_ .req x2  //index for loops
+idx  .req w2
+ad0_ .req x3  //addresses
+ad1_ .req x4
+ad2_ .req x5
+tm0_ .req x6  //temporary variables
+//tm0  .req w6
+tm1_ .req x7
+//tm1  .req w7
+t1   .req x7 
+tm2_ .req x8
+//tm2  .req w8
+t2   .req x8
+tm3_ .req x9
+//tm3  .req w9
+//tm4  .req w10
+tm4_ .req x10
+
+//registers only used for the peprocessing at the beginning of the program, no colission with the later hash calculation
+blk_ .req x15  //blocks, block count,
+//blk  .req w15
+bbi_ .req x16 //block remainder, bits < 512
+//bbi  .req w16
+wrd_ .req x17  //words, word count
+//wrd  .req w17
+wbi_ .req x18  //word remainder, bits < 32
+//wbi  .req w18
+sft_ .req x19
+//sft  .req w19
+
+//registers used for the hash calculation
+kos   .req x11  //actual SHA-256 constant
+wos   .req x12  //actual workingschedule
+hash0 .req x13  
+hash1 .req x14
+hash2 .req x15
+hash3 .req x16
+hash4 .req x17
+hash5 .req x18
+hash6 .req x19
+hash7 .req x20
+//working variables a-h
+vara  .req x21 
+varb  .req x22
+varc  .req x23
+vard  .req x24
+vare  .req x25
+varf  .req x26
+varg  .req x27
+varh  .req x30
+frmptr .req x29 //Frame Pointer
+plreg  .req x30 //Procedure Link Register
+
+//xzr          
