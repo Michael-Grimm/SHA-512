@@ -6,7 +6,7 @@
 
 
 /**
- * Test function for the first 16  words of the message schedule
+ * Test function for the first 16  u64 ints of the message schedule
  * Input: messagebuffer in x0 = mbuf_
  * Output: buffer in x1
  */
