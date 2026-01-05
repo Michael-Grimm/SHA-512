@@ -170,7 +170,7 @@
 
 
 /**
- * Loads one block (16 words) from messagebuffer
+ * Loads one block (16 u64-ints) from messagebuffer
  * and stores the values at label 'workingschedule'.
  */
 .macro PREPARE_MESSAGE_SCHEDULE_0_to_15 buffer=mbuf_
@@ -184,7 +184,7 @@
 
 
 /**
- * 6.2.2 Preparation of a single message schedules above 15
+ * 6.4.2 Preparation of a single message schedules above 15
  * wos = sig1(W[t-2]) + W[t-7] + sig0(W[t-15]) + W[t-16] 
  * Expects the actual address of working schedule in ad0_
  * Retrieves the schedules 2, 7, 15 and 16 places before the actual schedule
@@ -239,7 +239,7 @@
 
 
 /**
- * 4.1.3 SHA-512 (Big) Sigma functions (4.10) and (4.11) 
+ * 4.1.3 SHA-512 (Big) Sigma functions  
  * Uses temporary registers tm4_, tm3_
  * inp: vara/vare
  * sf1 sf2, sf3: shift factors
