@@ -1,5 +1,5 @@
 /**
- *  Tests functions for 4.1.2 SHA-256 functions.
+ *  Tests functions for 4.1.2 SHA-512 functions.
  */
  long long int test_Sigma0(long long int);
   long long int test_Sigma1(long long  int);
